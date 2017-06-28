@@ -1,4 +1,4 @@
-# react-native-baidu-map [![npm version](https://img.shields.io/npm/v/react-native-baidu-map.svg?style=flat)](https://www.npmjs.com/package/react-native-baidu-map)
+# react-native-baidumap-yx [![npm version](https://img.shields.io/npm/v/react-native-baidu-map.svg?style=flat)](https://www.npmjs.com/package/react-native-baidumap-yx)
 
 Baidu Map SDK modules and view for React Native(Android & IOS), support react native 0.40+.
 Fork from https://github.com/lovebing/react-native-baidu-map
