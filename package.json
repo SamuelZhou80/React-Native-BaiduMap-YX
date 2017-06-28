@@ -1,23 +1,23 @@
 {
-    "name": "react-native-baidumap-yx",
-    "version": "0.1.0",
-    "description": "Baidu Map SDK modules and view for React Native(Android & IOS), support react native 0.40+.",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/SamuelZhou80/React-Native-BaiduMap-YX.git"
-    },
-    "keywords": [
-        "Baidu Map",
-        "React Native"
-    ],
-    "author": "Lin Daqian",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/SamuelZhou80/React-Native-BaiduMap-YX/issues"
-    },
-    "homepage": "https://github.com/SamuelZhou80/React-Native-BaiduMap-YX#readme"
+  "name": "react-native-baidumap-yx",
+  "version": "0.1.1",
+  "description": "Baidu Map SDK modules and view for React Native(Android & IOS), support react native 0.40+.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SamuelZhou80/React-Native-BaiduMap-YX.git"
+  },
+  "keywords": [
+    "Baidu Map",
+    "React Native"
+  ],
+  "author": "Lin Daqian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SamuelZhou80/React-Native-BaiduMap-YX/issues"
+  },
+  "homepage": "https://github.com/SamuelZhou80/React-Native-BaiduMap-YX#readme"
 }
