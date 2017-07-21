@@ -133,6 +133,7 @@ public class BaiduMapViewManager extends ViewGroupManager<MapView> {
     public void setMarkers(MapView mapView, ReadableArray options) {
         String key = "markers_" + mapView.getId();
         List<Marker> markers = mMarkersMap.get(key);
+        mapView.getMap().clear();   //清除所有覆盖物和Info窗口
         if (markers == null) {
             markers = new ArrayList<>();
         }
