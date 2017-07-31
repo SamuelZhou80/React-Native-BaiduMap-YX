@@ -25,6 +25,7 @@ export default class MapView extends Component {
     marker: PropTypes.object,
     markers: PropTypes.array,
     childrenPoints: PropTypes.array,
+    planNodeList: PropTypes.array, //路径规划中的出行节点信息,出行节点包括：[起点，途经点，终点]
     onMapStatusChangeStart: PropTypes.func,
     onMapStatusChange: PropTypes.func,
     onMapStatusChangeFinish: PropTypes.func,
@@ -43,6 +44,7 @@ export default class MapView extends Component {
     childrenPoints: [],
     marker: null,
     markers: [],
+    planNodeList:[],
     center: null,
     zoom: 10
   };

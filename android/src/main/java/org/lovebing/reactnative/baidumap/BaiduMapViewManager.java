@@ -161,6 +161,15 @@ public class BaiduMapViewManager extends ViewGroupManager<MapView> {
         this.childrenPoints = childrenPoints;
     }
 
+    //线路规划
+    @ReactProp(name="planNodeList")
+    public void setRoutePlan(MapView mapView, ReadableArray planNodeList){
+       
+        if(planNodeList.size()>0){
+           new RoutePlanUtil().searchButtonProcess(mapView,planNodeList,mReactContext);
+        }
+    }
+
     /**
      *
      * @param mapView
@@ -245,23 +254,37 @@ public class BaiduMapViewManager extends ViewGroupManager<MapView> {
 
         map.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                if (marker.getTitle().length() > 0) {
-                    mMarkerText.setText(marker.getTitle());
-                    InfoWindow infoWindow = new InfoWindow(mMarkerText, marker.getPosition(), -80);
-                    mMarkerText.setVisibility(View.GONE);
-                    //mapView.getMap().showInfoWindow(infoWindow);
-                } else {
-                    mapView.getMap().hideInfoWindow();
+            public boolean onMarkerClick(final Marker marker) {
+                boolean flag = false;
+
+                if(marker instanceof Marker){
+                    if (marker != null) {
+                        String title = marker.getTitle();
+                        if (title != null && title.length() > 0 && title.indexOf("PersonID-")==-1) {
+                            mMarkerText.setText(title);
+                            InfoWindow infoWindow = new InfoWindow(mMarkerText, marker.getPosition(), -80);
+                            mMarkerText.setVisibility(View.GONE);
+                            mapView.getMap().showInfoWindow(infoWindow);
+                        } else {
+                            mapView.getMap().hideInfoWindow();
+                        }
+                        
+                        if(title.indexOf("PersonID-")!=-1){
+                            title.replace("PersonID-","");
+                        }
+
+                        WritableMap writableMap = Arguments.createMap();
+                        WritableMap position = Arguments.createMap();
+                        position.putDouble("latitude", marker.getPosition().latitude);
+                        position.putDouble("longitude", marker.getPosition().longitude);
+                        writableMap.putMap("position", position);
+                        writableMap.putString("title", title);
+                        sendEvent(mapView, "onMarkerClick", writableMap);
+                        flag = true;
+                        }   
                 }
-                WritableMap writableMap = Arguments.createMap();
-                WritableMap position = Arguments.createMap();
-                position.putDouble("latitude", marker.getPosition().latitude);
-                position.putDouble("longitude", marker.getPosition().longitude);
-                writableMap.putMap("position", position);
-                writableMap.putString("title", marker.getTitle());
-                sendEvent(mapView, "onMarkerClick", writableMap);
-                return true;
+                
+                return flag;
             }
         });
 
