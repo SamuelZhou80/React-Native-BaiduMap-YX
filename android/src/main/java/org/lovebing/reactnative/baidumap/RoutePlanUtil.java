@@ -1,6 +1,5 @@
 package org.lovebing.reactnative.baidumap;
 
-
 import java.util.List;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -41,7 +40,6 @@ import com.baidu.mapapi.search.route.WalkingRouteLine.WalkingStep;
 import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 
-
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.search.route.DrivingRouteLine.DrivingStep;
@@ -67,7 +65,7 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
     BaiduMap mBaidumap = null;
 
     // 搜索相关
-    RoutePlanSearch mSearch = null;    // 搜索模块，也可去掉地图模块独立使用       
+    RoutePlanSearch mSearch = null; // 搜索模块，也可去掉地图模块独立使用       
     WalkingRouteResult nowResultwalk = null;
     BikingRouteResult nowResultbike = null;
     TransitRouteResult nowResultransit = null;
@@ -80,7 +78,7 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
     OverlayManager routeOverlay = null;
 
     private TextView popupText = null; // 泡泡view
-    
+
     boolean useDefaultIcon = false;
 
     int nowSearchType = -1; // 当前进行的检索，供判断浏览节点时结果使用。
@@ -88,20 +86,20 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
     int walkingIndex = 0;
     int walkingLength = 0;
     //步行 路段所经过的地理坐标集合,（为支持多点步行，转为画折线需要该集合)
-    List<LatLng> walkingWayPoints = new ArrayList<LatLng>(); 
+    List<LatLng> walkingWayPoints = new ArrayList<LatLng>();
 
     /**
      * 初始化搜索模块
      * @return
      */
     protected RoutePlanSearch getSearch() {
-        if(mSearch != null) {
+        if (mSearch != null) {
             mSearch.destroy();
         }
         // 初始化搜索模块，注册事件监听
         mSearch = RoutePlanSearch.newInstance(); //获取RoutePlan检索实例
         mSearch.setOnGetRoutePlanResultListener(this); //设置路线检索监听者
-      
+
         return mSearch;
     }
 
@@ -109,39 +107,42 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
      * 发起路线规划搜索示例
      * 
      */
-    public void searchButtonProcess(final MapView mapView,final ReadableArray planNodeList,final ThemedReactContext context) {
+    public void searchButtonProcess(final MapView mapView, final ReadableArray planNodeList,
+            final ThemedReactContext context) {
+
+        walkingWayPoints.clear();
+        walkingLength = 0;
+        walkingIndex = 0;
 
         mSearch = getSearch();
         mReactContext = context;
         // 重置浏览节点的路线数据
         route = null;
         //mapView.getMap().clear();
-      
+
         mBaidumap = mapView.getMap();
         mBaidumap.clear();
-       
+
         //drivingPlanSearch(mSearch,planNodeList);
-        
-        walkingPlanSearch(mSearch,planNodeList);
+
+        walkingPlanSearch(mSearch, planNodeList);
     }
 
     /**
      * 步行线路查询
      */
-    private void walkingPlanSearch(final RoutePlanSearch mSearch,final ReadableArray planNodeList){
-
+    private void walkingPlanSearch(final RoutePlanSearch mSearch, final ReadableArray planNodeList) {
 
         //添加Marker
-
-        for(int i = 0;i<planNodeList.size();i++){
+        walkingLength = planNodeList.size();
+        for (int i = 0; i < planNodeList.size(); i++) {
             ReadableMap nodeMap = planNodeList.getMap(i);
             int resourceId = 0;
-            if(i == 0){
+            if (i == 0) {
                 resourceId = R.drawable.icon_st;
-            }
-            else if(i==planNodeList.size()-1){
+            } else if (i == planNodeList.size() - 1) {
                 resourceId = R.drawable.icon_en;
-            }else{
+            } else {
                 resourceId = R.drawable.icon_gcoding;
             }
             BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(resourceId);
@@ -153,51 +154,52 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
         }
 
         //步行路线规划
-        for(int i=0; i<planNodeList.size()-1; i++){
+        for (int i = 0; i < planNodeList.size() - 1; i++) {
+
+            walkingIndex = i;
 
             ReadableMap stMap = planNodeList.getMap(i);
-            ReadableMap enMap = planNodeList.getMap(i+1);
+            ReadableMap enMap = planNodeList.getMap(i + 1);
             // 设置起终点信息，
-            LatLng stLatLng = new LatLng(stMap.getDouble("latitude"),stMap.getDouble("longitude"));
-            LatLng enLatLng = new LatLng(enMap.getDouble("latitude"),enMap.getDouble("longitude"));
+            LatLng stLatLng = new LatLng(stMap.getDouble("latitude"), stMap.getDouble("longitude"));
+            LatLng enLatLng = new LatLng(enMap.getDouble("latitude"), enMap.getDouble("longitude"));
             PlanNode stNode = PlanNode.withLocation(stLatLng);
             PlanNode enNode = PlanNode.withLocation(enLatLng);
 
-            mSearch.walkingSearch((new WalkingRoutePlanOption())
-                    .from(stNode).to(enNode)); //步行路线规划参数    
+            mSearch.walkingSearch((new WalkingRoutePlanOption()).from(stNode).to(enNode)); //步行路线规划参数    
         }
+
     }
 
     /***
      * 驾车线路查询
      */
-    private void drivingPlanSearch(final RoutePlanSearch mSearch,final ReadableArray planNodeList){
+    private void drivingPlanSearch(final RoutePlanSearch mSearch, final ReadableArray planNodeList) {
 
         ReadableMap stMap = planNodeList.getMap(0);
-        ReadableMap enMap = planNodeList.getMap(planNodeList.size()-1);
+        ReadableMap enMap = planNodeList.getMap(planNodeList.size() - 1);
 
         // 设置起终点信息，
-        LatLng stLatLng = new LatLng(stMap.getDouble("latitude"),stMap.getDouble("longitude"));
-        LatLng enLatLng = new LatLng(enMap.getDouble("latitude"),enMap.getDouble("longitude"));
+        LatLng stLatLng = new LatLng(stMap.getDouble("latitude"), stMap.getDouble("longitude"));
+        LatLng enLatLng = new LatLng(enMap.getDouble("latitude"), enMap.getDouble("longitude"));
         PlanNode stNode = PlanNode.withLocation(stLatLng);
         PlanNode enNode = PlanNode.withLocation(enLatLng);
 
         //途径点
         List passbyNode_list = new ArrayList();
-        for(int i =1;i< planNodeList.size()-1;i++){
-            LatLng latlng = new LatLng(planNodeList.getMap(i).getDouble("latitude"),planNodeList.getMap(i).getDouble("longitude"));
+        for (int i = 1; i < planNodeList.size() - 1; i++) {
+            LatLng latlng = new LatLng(planNodeList.getMap(i).getDouble("latitude"),
+                    planNodeList.getMap(i).getDouble("longitude"));
             PlanNode passby = PlanNode.withLocation(latlng);//途径点
             passbyNode_list.add(passby);
         }
 
         mSearch.drivingSearch((new DrivingRoutePlanOption()) //发起驾车路线规划
-            .from(stNode)   //驾车路线规划参数 from 设置起点 
-            .to(enNode)     //to 设置终点
-            .passBy(passbyNode_list) //passBy 设置途径点
-            .policy(DrivingPolicy.ECAR_TIME_FIRST)); //驾乘检索策略常量：时间优先
+                .from(stNode) //驾车路线规划参数 from 设置起点 
+                .to(enNode) //to 设置终点
+                .passBy(passbyNode_list) //passBy 设置途径点
+                .policy(DrivingPolicy.ECAR_TIME_FIRST)); //驾乘检索策略常量：时间优先
     }
-    
-   
 
     /**
      * 
@@ -205,14 +207,15 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
      */
     @Override
     public void onGetWalkingRouteResult(WalkingRouteResult result) {
+
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
             Toast.makeText(mReactContext, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
-           
+
             return;
         }
-        if (result.error == SearchResult.ERRORNO.NO_ERROR) {     
+        if (result.error == SearchResult.ERRORNO.NO_ERROR) {
 
             //=================================//
             //两点间步行线路 Demo代码  
@@ -231,14 +234,17 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
             //多点步行，收集 路段所经过的地理坐标
             final ArrayList<OverlayOptions> list = new ArrayList<OverlayOptions>();
             PolylineOptions object = new PolylineOptions();
-            List<LatLng> arg0=new ArrayList<LatLng>();
+            List<LatLng> arg0 = new ArrayList<LatLng>();
             List<WalkingStep> allStep = result.getRouteLines().get(0).getAllStep();
+
             for (int i = 0; i < allStep.size(); i++) {
                 WalkingStep walkingStep = allStep.get(i);
-                List<LatLng> wayPoints = walkingStep.getWayPoints();
-                arg0.addAll(wayPoints);
+                if(walkingStep.getWayPoints().size()>0){
+                    arg0.addAll(walkingStep.getWayPoints());
+                }
             }
-            object.color(Color.BLUE).width(10).points(arg0);
+
+            object.color(Color.GREEN).width(12).points(arg0);
                 //.dottedLine(true)
                 //.customTexture(BitmapDescriptorFactory.fromResource(R.drawable.icon_road_green_arrow));
             list.add(object);
@@ -259,7 +265,8 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
                 }
             };
             overlayManager.addToMap();
-            overlayManager.zoomToSpan();
+            //overlayManager.zoomToSpan();
+
         } else {
             Toast.makeText(mReactContext, "walkingroute结果数<0", Toast.LENGTH_SHORT).show();
             return;
@@ -272,7 +279,6 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
         list.add(BitmapDescriptorFactory.fromResource(R.drawable.icon_road_green_arrow));
         return list;
     }
-    
 
     @Override
     public void onGetTransitRouteResult(TransitRouteResult result) {
@@ -308,16 +314,16 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             //nodeIndex = -1;
 
-                //驾车线路 Demo版
-                // route = result.getRouteLines().get(0);
-                // DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaidumap);
-                // routeOverlay = overlay;
-                // mBaidumap.setOnMarkerClickListener(overlay);
-                // overlay.setData(result.getRouteLines().get(0));
-                // overlay.addToMap();
-                // overlay.zoomToSpan();
-        
-                drivingLineWithoutIcon(result.getRouteLines().get(0)); //折线无转弯节点版
+            //驾车线路 Demo版
+            // route = result.getRouteLines().get(0);
+            // DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaidumap);
+            // routeOverlay = overlay;
+            // mBaidumap.setOnMarkerClickListener(overlay);
+            // overlay.setData(result.getRouteLines().get(0));
+            // overlay.addToMap();
+            // overlay.zoomToSpan();
+
+            drivingLineWithoutIcon(result.getRouteLines().get(0)); //折线无转弯节点版
         }
     }
 
@@ -327,21 +333,22 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
     private void drivingLineWithoutIcon(DrivingRouteLine drivingRouteLine) {
         final ArrayList<OverlayOptions> list = new ArrayList<OverlayOptions>();
         PolylineOptions object = new PolylineOptions();
-        List<LatLng> arg0=new ArrayList<LatLng>();
+        List<LatLng> arg0 = new ArrayList<LatLng>();
         List<DrivingStep> allStep = drivingRouteLine.getAllStep();
         for (int i = 0; i < allStep.size(); i++) {
             DrivingStep drivingStep = allStep.get(i);
             List<LatLng> wayPoints = drivingStep.getWayPoints();
-                arg0.addAll(wayPoints);
+            arg0.addAll(wayPoints);
         }
         object.points(arg0);
-                
+
         list.add(object);
         OverlayManager overlayManager = new OverlayManager(mBaidumap) {
             @Override
             public boolean onPolylineClick(Polyline arg0) {
                 return false;
             }
+
             @Override
             public boolean onMarkerClick(Marker arg0) {
                 return false;
@@ -353,7 +360,38 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
             }
         };
         overlayManager.addToMap();
-        overlayManager.zoomToSpan();
+        //overlayManager.zoomToSpan();
+    }
+
+    /***
+    * 步行线路 改为 画折线
+    */
+    private void walkingLineWithPoints(List<LatLng> walkingWayPoints) {
+
+        final ArrayList<OverlayOptions> list = new ArrayList<OverlayOptions>();
+        PolylineOptions object = new PolylineOptions();
+
+        object.points(walkingWayPoints);
+
+        list.add(object);
+        OverlayManager overlayManager = new OverlayManager(mBaidumap) {
+            @Override
+            public boolean onPolylineClick(Polyline arg0) {
+                return false;
+            }
+
+            @Override
+            public boolean onMarkerClick(Marker arg0) {
+                return false;
+            }
+
+            @Override
+            public List<OverlayOptions> getOverlayOptions() {
+                return list;
+            }
+        };
+        overlayManager.addToMap();
+        
     }
 
     /**
@@ -367,22 +405,21 @@ public class RoutePlanUtil implements OnGetRoutePlanResultListener {
 
         @Override
         public BitmapDescriptor getStartMarker() {
-           
+
             return null;
         }
 
         @Override
         public BitmapDescriptor getTerminalMarker() {
-            
+
             return null;
         }
 
         @Override
-        public boolean onRouteNodeClick(int i){
+        public boolean onRouteNodeClick(int i) {
             return false;
         }
 
     }
 
-  
 }
