@@ -1,4 +1,4 @@
-package org.lovebing.reactnative.baidumap;
+﻿package org.lovebing.reactnative.baidumap;
 
 import org.lovebing.reactnative.baidumap.ImageLoader.LoaderCallBack;
 import android.util.Log;
@@ -95,7 +95,12 @@ public class MarkerUtil {
             });
 
         } else {
-            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.icon_gcoding);
+            BitmapDescriptor bitmapDescriptor;
+            if (option.optString("photoId").equals("shop")) {
+                bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.icon_shop);
+            } else {
+                bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.icon_gcoding);
+            }
             LatLng position = getLatLngFromOption(option);
             OverlayOptions overlayOptions = new MarkerOptions().icon(bitmapDescriptor).position(position)
                     .title(option.getString("title"));
