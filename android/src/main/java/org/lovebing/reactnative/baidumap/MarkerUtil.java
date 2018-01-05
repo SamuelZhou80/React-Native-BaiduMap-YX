@@ -1,4 +1,4 @@
-﻿package org.lovebing.reactnative.baidumap;
+package org.lovebing.reactnative.baidumap;
 
 import org.lovebing.reactnative.baidumap.ImageLoader.LoaderCallBack;
 import android.util.Log;
