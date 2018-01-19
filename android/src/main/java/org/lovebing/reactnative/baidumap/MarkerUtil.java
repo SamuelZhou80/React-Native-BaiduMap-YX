@@ -1,4 +1,4 @@
-﻿package org.lovebing.reactnative.baidumap;
+package org.lovebing.reactnative.baidumap;
 
 import org.lovebing.reactnative.baidumap.ImageLoader.LoaderCallBack;
 import android.util.Log;
@@ -96,7 +96,7 @@ public class MarkerUtil {
 
         } else {
             BitmapDescriptor bitmapDescriptor;
-            if (option.optString("photoId").equals("shop")) {
+            if (option.getString("photoId").equals("shop")) {
                 bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.icon_shop);
             } else {
                 bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.icon_gcoding);
