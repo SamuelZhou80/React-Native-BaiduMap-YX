@@ -41,7 +41,7 @@ public class GeolocationModule extends BaseModule
 
     private void initLocationClient() {
         LocationClientOption option = new LocationClientOption();
-        option.setCoorType("bd09ll");
+        option.setCoorType("gcj02");
         option.setIsNeedAddress(true);
         option.setIsNeedAltitude(true);
         option.setIsNeedLocationDescribe(true);
