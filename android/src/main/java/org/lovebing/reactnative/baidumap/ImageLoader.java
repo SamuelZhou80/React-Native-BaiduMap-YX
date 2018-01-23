@@ -53,6 +53,11 @@ abstract public class ImageLoader {
 
             @Override
             public void run() {
+                // 目录不存在则先创建
+                File dirFile = new File(cachePath);
+                if (!dirFile.exists()) {
+                    dirFile.mkdirs();
+                }
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 String sPath = cachePath + photoId ;
                 Bitmap bitmap;
