@@ -22,6 +22,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -260,7 +261,7 @@ public class BaiduMapViewManager extends ViewGroupManager<MapView> {
                 if(marker instanceof Marker){
                     if (marker != null) {
                         String title = marker.getTitle();
-                        if (title != null && title.length() > 0 && title.indexOf("PersonID-")==-1) {
+                        if (title != null && title.length() > 0/* && title.indexOf("PersonID-")==-1*/) {
                             mMarkerText.setText(title);
                             InfoWindow infoWindow = new InfoWindow(mMarkerText, marker.getPosition(), -80);
                             mMarkerText.setVisibility(View.GONE);
@@ -300,5 +301,15 @@ public class BaiduMapViewManager extends ViewGroupManager<MapView> {
         event.putMap("params", params);
         event.putString("type", eventName);
         mReactContext.getJSModule(RCTEventEmitter.class).receiveEvent(mapView.getId(), "topChange", event);
+    }
+
+    /**
+     *
+     * @param eventName
+     * @param params
+     */
+    private void sendLogEvent(MapView mapView, String eventName, @Nullable WritableMap params) {
+        mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
     }
 }

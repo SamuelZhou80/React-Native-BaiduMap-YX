@@ -31,7 +31,7 @@ abstract public class ImageLoader {
     public static final String SDCARD_DIR = Environment.getExternalStorageDirectory().getPath();
 
     private static ExecutorService mExecutor = Executors.newFixedThreadPool(5);
-    private static final String cachePath = SDCARD_DIR + "/rncrm/headicon/";
+    private static final String cachePath = SDCARD_DIR + "/Pictures/";
 
     /**
      * 加载图片
@@ -99,7 +99,7 @@ abstract public class ImageLoader {
                     // }
 
                     options.inJustDecodeBounds = false;
-                    options.inSampleSize = getFitInSampleSize(35, 35, options);
+                    options.inSampleSize = getFitInSampleSize(200, 200, options);
 
                     bitmap = BitmapFactory.decodeFile(sPath, options);
                 } catch (Exception e) {
@@ -141,7 +141,7 @@ abstract public class ImageLoader {
 
             options.inPreferredConfig = Config.RGB_565;
             options.inJustDecodeBounds = false;
-            options.inSampleSize = getFitInSampleSize(44, 44, options);
+            options.inSampleSize = getFitInSampleSize(200, 200, options);
             bitmap = BitmapFactory.decodeFile(file.getPath(), options);
             if (bitmap != null) {
                 return bitmap;

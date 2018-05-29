@@ -77,13 +77,12 @@ public class RoundAngleImageView extends ImageView{
         paint.setAntiAlias(true);  //设置是否使用抗锯齿功能，比较耗资源，减慢绘制速度
         canvas.drawARGB(0, 0, 0, 0);  
         paint.setColor(color);  
-        int x = bitmap.getWidth(); 
+        // int x = bitmap.getWidth(); 
 
+        roundPx = bitmap.getWidth() / 2;
         canvas.drawRoundRect(rectF, roundPx, roundPx, paint); //绘制圆角矩形：第二、三个参数分别定义x和y方向的圆角弧度 
         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));  
         canvas.drawBitmap(bitmap, rect, rect, paint);  
-        return output;  
-
-
-    }  
-}  
+        return output;
+    }
+}
