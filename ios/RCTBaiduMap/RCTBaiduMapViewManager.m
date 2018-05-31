@@ -88,6 +88,7 @@ didSelectAnnotationView:(BMKAnnotationView *)view {
                                     }
                             };
     [self sendEvent:mapView params:event];
+    [mapView deselectAnnotation:view.annotation animated:YES];
 }
 
 - (void) mapView:(BMKMapView *)mapView
