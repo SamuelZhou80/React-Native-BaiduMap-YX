@@ -85,15 +85,33 @@ export default {
     }
     return new Promise((resolve, reject) => {
       try {
-        _module.getCurrentPosition();
+        _module.getCurrentPosition()
+          .then(result => {
+            resolve(result);
+          })
+          .catch(error => {
+            reject(error);
+          });
       }
       catch (e) {
         reject(e);
         return;
       }
-      DeviceEventEmitter.once('onGetCurrentLocationPosition', resp => {
-        resolve(resp);
-      });
+      // DeviceEventEmitter.once('onGetCurrentLocationPosition', resp => {
+      //   resolve(resp);
+      // });
     });
+  },
+
+  startGeoLocation() {
+    if (Platform.OS == 'android') {
+      _module.startLocation();
+    }
+  },
+
+  stopGeoLocation() {
+    if (Platform.OS == 'android') {
+      _module.stopLocation();
+    }
   }
 };

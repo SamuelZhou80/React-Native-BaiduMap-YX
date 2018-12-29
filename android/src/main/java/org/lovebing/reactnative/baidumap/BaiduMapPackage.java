@@ -34,7 +34,8 @@ public class BaiduMapPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
                 new BaiduMapModule(reactContext),
-                new GeolocationModule(reactContext)
+                new GeolocationModule(reactContext),
+                new PoiSearchModule(reactContext)
         );
     }
 
